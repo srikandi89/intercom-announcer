@@ -4,7 +4,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.intercom.announcer.core.RestApi;
 import com.intercom.announcer.entities.Customer;
+import com.intercom.announcer.entities.Location;
 import com.intercom.announcer.services.CustomerService;
+import com.intercom.announcer.utilities.LocationUtility;
 import com.intercom.announcer.utilities.StringUtility;
 
 import java.io.IOException;
@@ -23,7 +25,7 @@ public class CustomerRepository {
         this.restApi = restApi;
     }
 
-    public MutableLiveData<List<Customer>> getCustomersLiveData() {
+    public MutableLiveData<List<Customer>> getCustomersLiveData(Location source, double distance) {
 
         MutableLiveData<List<Customer>> customersLiveData = new MutableLiveData<>();
 
@@ -39,7 +41,14 @@ public class CustomerRepository {
                     if (rawList != null) {
                         for (String data: rawList) {
                             Customer customer = Customer.toCustomer(data);
-                            customers.add(customer);
+
+                            if (customer != null) {
+                                Location l2 = new Location(customer.getLatitude(), customer.getLongitude());
+
+                                if (inRange(source, l2, distance)) {
+                                    customers.add(customer);
+                                }
+                            }
                         }
 
                         customersLiveData.setValue(customers);
@@ -56,5 +65,9 @@ public class CustomerRepository {
         });
 
         return customersLiveData;
+    }
+
+    private boolean inRange(Location l1, Location l2, double distance) {
+        return LocationUtility.getDistance(l1, l2) <= distance;
     }
 }
