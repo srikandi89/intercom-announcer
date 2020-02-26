@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.intercom.announcer.core.RestApi;
+import com.intercom.announcer.entities.Location;
+import com.intercom.announcer.utilities.LocationUtility;
 import com.intercom.announcer.viewmodels.CustomerListViewModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,5 +38,10 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         });
+
+        Location l1 = new Location(47.6788206, -122.3271205);
+        Location l2 = new Location(47.6788206, -122.5271205);
+
+        Log.d("MAIN_ACTIVITY", "Distance = "+LocationUtility.getDistance(l1, l2));
     }
 }
