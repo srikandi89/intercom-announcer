@@ -1,6 +1,7 @@
 package com.intercom.announcer.viewmodels;
 
 import androidx.databinding.BaseObservable;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -24,9 +25,9 @@ public class CustomerListViewModel extends ViewModel {
     /**
      * This function will be return list of customers within given distance
      * from certain location
-     * @return list of customer
+     * @return live data of list of customer
      */
-    public List<Customer> getCustomerList(Location source, Location target) {
-        return customerRepository.getCustomersLiveData().getValue();
+    public LiveData<List<Customer>> getCustomerListLiveData(Location source, Location target) {
+        return customerRepository.getCustomersLiveData();
     }
 }

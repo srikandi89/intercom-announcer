@@ -23,6 +23,17 @@ public class MainActivity extends AppCompatActivity {
 
         customerListVm = new ViewModelProvider(this).get(CustomerListViewModel.class);
         customerListVm.init(restApi);
-        customerListVm.getCustomerList(null, null);
+        customerListVm.getCustomerListLiveData(null, null).observe(this, customers -> {
+
+            if (customers == null) {
+                // TODO: Show failed to load customers data alert
+                return;
+            }
+
+            if (customers.isEmpty()) {
+                // TODO: Show no customers within given range alert
+                return;
+            }
+        });
     }
 }

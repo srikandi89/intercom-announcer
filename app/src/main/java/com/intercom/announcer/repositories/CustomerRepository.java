@@ -18,14 +18,14 @@ import retrofit2.Response;
 
 public class CustomerRepository {
     private RestApi restApi;
-    private MutableLiveData<List<Customer>> customersLiveData;
 
     public CustomerRepository(RestApi restApi) {
         this.restApi = restApi;
-        customersLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<Customer>> getCustomersLiveData() {
+
+        MutableLiveData<List<Customer>> customersLiveData = new MutableLiveData<>();
 
         Call<ResponseBody> call = restApi.getApi().create(CustomerService.class).getCustomers();
         call.enqueue(new Callback<ResponseBody>() {
