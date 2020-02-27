@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
 
 import com.intercom.announcer.adapters.CustomerListAdapter;
 import com.intercom.announcer.core.RestApi;
@@ -19,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     CustomerListAdapter customerListAdapter;
 
     RecyclerView rvCustomers;
+    View loaderWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,24 +42,33 @@ public class MainActivity extends AppCompatActivity {
         customerListAdapter = new CustomerListAdapter(this);
         rvCustomers.setAdapter(customerListAdapter);
 
+        loaderWrapper = findViewById(R.id.loader_wrapper);
+
         populateCustomerList();
     }
 
     private void populateCustomerList() {
+        loaderWrapper.setVisibility(View.VISIBLE);
+        rvCustomers.setVisibility(View.GONE);
         customerListVm.getCustomerListLiveData(Config.sourceLocation, Config.distanceThreshold).observe(this, customers -> {
 
             if (customers == null) {
-                // TODO: Show failed to load customers data alert
+                showFailedLoadCustomer();
                 return;
             }
 
             if (customers.isEmpty()) {
-                // TODO: Show no customers within given range alert
+                showFailedLoadCustomer();
                 return;
             }
 
+            loaderWrapper.setVisibility(View.GONE);
+            rvCustomers.setVisibility(View.VISIBLE);
             customerListAdapter.updateList(customers);
-            Log.d("MAIN_ACTIVITY", "Customers: "+customers.size());
         });
+    }
+
+    private void showFailedLoadCustomer() {
+        Toast.makeText(this, getString(R.string.failed_load_customer_message), Toast.LENGTH_SHORT).show();
     }
 }
