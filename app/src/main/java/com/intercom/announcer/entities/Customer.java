@@ -15,16 +15,16 @@ import com.google.gson.JsonParser;
  * The properties above will be automatically mapped to camel case convention
  */
 public class Customer {
-    private long userId;
+    private int userId;
     private String name;
     private double latitude;
     private double longitude;
 
-    public long getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
@@ -55,16 +55,15 @@ public class Customer {
     public static Customer toCustomer(String raw) {
 
         try {
-            JsonParser parser = new JsonParser();
-            JsonElement jsonTree = parser.parse(raw);
-            JsonObject object = jsonTree.getAsJsonObject();
-
-            Customer customer = new Customer();
+            JsonParser parser       = new JsonParser();
+            JsonElement jsonTree    = parser.parse(raw);
+            JsonObject object       = jsonTree.getAsJsonObject();
+            Customer customer       = new Customer();
 
             customer.setLatitude(object.get("latitude").getAsDouble());
             customer.setLongitude(object.get("longitude").getAsDouble());
             customer.setName(object.get("name").getAsString());
-            customer.setUserId(object.get("user_id").getAsLong());
+            customer.setUserId(object.get("user_id").getAsInt());
 
             return customer;
         }

@@ -11,6 +11,8 @@ import com.intercom.announcer.utilities.StringUtility;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -67,7 +69,14 @@ public class CustomerRepository {
         return customersLiveData;
     }
 
-    private boolean inRange(Location l1, Location l2, double distance) {
+    public boolean inRange(Location l1, Location l2, double distance) {
         return LocationUtility.getDistance(l1, l2) <= distance;
+    }
+
+    public List<Customer> sortCustomers(List<Customer> customers) {
+        List<Customer> sorted = new ArrayList<>(customers);
+        Collections.sort(sorted, (o1, o2) -> o1.getUserId()-o2.getUserId());
+
+        return sorted;
     }
 }
