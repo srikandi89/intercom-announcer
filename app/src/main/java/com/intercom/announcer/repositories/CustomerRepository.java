@@ -27,7 +27,7 @@ public class CustomerRepository {
         this.restApi = restApi;
     }
 
-    public MutableLiveData<List<Customer>> getCustomersLiveData(Location source, double distance) {
+    public MutableLiveData<List<Customer>> getCustomersLiveData(Location source, double thresholdDistance) {
 
         MutableLiveData<List<Customer>> customersLiveData = new MutableLiveData<>();
 
@@ -47,7 +47,10 @@ public class CustomerRepository {
                             if (customer != null) {
                                 Location l2 = new Location(customer.getLatitude(), customer.getLongitude());
 
-                                if (inRange(source, l2, distance)) {
+                                double distance = LocationUtility.getDistance(source, l2);
+                                customer.setDistance(distance);
+
+                                if (inRange(distance, thresholdDistance)) {
                                     customers.add(customer);
                                 }
                             }
@@ -69,8 +72,8 @@ public class CustomerRepository {
         return customersLiveData;
     }
 
-    public boolean inRange(Location l1, Location l2, double distance) {
-        return LocationUtility.getDistance(l1, l2) <= distance;
+    public boolean inRange(double distance, double thresholdDistance) {
+        return distance <= thresholdDistance;
     }
 
     public List<Customer> sortCustomers(List<Customer> customers) {

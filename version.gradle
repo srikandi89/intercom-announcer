@@ -26,4 +26,5 @@ ext {
     // jetpack component section
     navigationVersion           = "2.3.0-alpha02"
     lifecycleVersion            = "2.2.0"
+    navVersion                  = "2.3.0-alpha02"
 }

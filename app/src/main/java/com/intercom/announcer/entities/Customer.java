@@ -11,6 +11,7 @@ import com.google.gson.JsonParser;
  * user_id: Long,
  * name: String,
  * longitude: Double
+ * distance (derived from haversine distance between 2 location)
  *
  * The properties above will be automatically mapped to camel case convention
  */
@@ -19,6 +20,7 @@ public class Customer {
     private String name;
     private double latitude;
     private double longitude;
+    private double distance;
 
     public int getUserId() {
         return userId;
@@ -50,6 +52,14 @@ public class Customer {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
     }
 
     public static Customer toCustomer(String raw) {

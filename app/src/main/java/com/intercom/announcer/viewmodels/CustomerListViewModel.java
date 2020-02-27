@@ -8,15 +8,12 @@ import com.intercom.announcer.entities.Customer;
 import com.intercom.announcer.entities.Location;
 import com.intercom.announcer.repositories.CustomerRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerListViewModel extends ViewModel {
-    private List<Customer> customerList;
     private CustomerRepository customerRepository;
 
     public void init(RestApi restApi) {
-        customerList = new ArrayList<>();
         customerRepository = new CustomerRepository(restApi);
     }
 
