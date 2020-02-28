@@ -11,9 +11,6 @@ import com.intercom.announcer.Config;
 import com.intercom.announcer.core.RestApi;
 import com.intercom.announcer.entities.Customer;
 import com.intercom.announcer.entities.Location;
-import com.intercom.announcer.repositories.CustomerRepository;
-import com.intercom.announcer.repositories.CustomerRepositoryImpl;
-import com.intercom.announcer.services.CustomerService;
 import com.intercom.announcer.utilities.ArrayUtility;
 import com.intercom.announcer.utilities.LocationUtility;
 import com.intercom.announcer.utilities.StringUtility;
@@ -23,7 +20,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.BufferedReader;
@@ -33,15 +29,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import retrofit2.Call;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CustomerListViewModelTest {
@@ -58,7 +49,8 @@ public class CustomerListViewModelTest {
     @Before
     public void setUp() throws IOException {
         mockWebServer = new MockWebServer();
-        baseUrl = "http://someUrl/";
+        mockWebServer.start();
+        baseUrl = mockWebServer.url("/").toString();
         restApi = new RestApi(baseUrl);
         restApi.build();
 
@@ -79,11 +71,8 @@ public class CustomerListViewModelTest {
     @Test
     public void testGetCustomerListLiveData() throws IOException, InterruptedException {
         MockResponse mockResponse = new MockResponse().setResponseCode(200).setBody(customersTest);
-        mockWebServer.start();
         mockWebServer.enqueue(mockResponse);
 
-//        CustomerService customerService = restApi.getApi().create(CustomerService.class);
-//        when(restApi.getApi().create(CustomerService.class).getCustomers()).thenReturn(mockWebServer)
 
         customerListVm.init(restApi);
 
@@ -104,11 +93,17 @@ public class CustomerListViewModelTest {
             }
         }
 
+        expectedCustomers = ArrayUtility.sortCustomers(expectedCustomers);
+
         customerListObserver = TestObserver
                 .test(customerListVm.getCustomerListLiveData(Config.sourceLocation, Config.distanceThreshold))
-                .awaitValue()
-                .assertHasValue()
-                .assertValue(expectedCustomers);
+                .awaitValue();
 
+        customerListObserver.assertHasValue();
+
+
+        for (int i=0; i<expectedCustomers.size(); i++) {
+            assertEquals(expectedCustomers.get(i).getName(), customerListObserver.value().get(i).getName());
+        }
     }
 }
