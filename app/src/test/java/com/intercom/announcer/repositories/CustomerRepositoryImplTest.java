@@ -50,9 +50,4 @@ public class CustomerRepositoryImplTest {
         assertEquals(expectedFirstId, actualFirstId);
     }
 
-    @Test
-    public void testInRange() {
-        assertTrue(customerRepositoryImpl.inRange(90, 100));
-        assertFalse(customerRepositoryImpl.inRange(110,100));
-    }
 }

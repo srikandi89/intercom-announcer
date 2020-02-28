@@ -24,4 +24,10 @@ public class LocationUtilityTest {
 
         assertTrue(Math.abs(actual - expected) < threshold);
     }
+
+    @Test
+    public void testInRange() {
+        assertTrue(LocationUtility.inRange(90, 100));
+        assertFalse(LocationUtility.inRange(110,100));
+    }
 }
