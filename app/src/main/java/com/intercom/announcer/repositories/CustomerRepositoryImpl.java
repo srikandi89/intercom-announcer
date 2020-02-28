@@ -50,15 +50,4 @@ public class CustomerRepositoryImpl implements CustomerRepository {
         return rawResponseLiveData;
     }
 
-    public boolean inRange(double distance, double thresholdDistance) {
-        return distance <= thresholdDistance;
-    }
-
-    public List<Customer> sortCustomers(List<Customer> customers) {
-        List<Customer> sorted = new ArrayList<>(customers);
-        Collections.sort(sorted, (o1, o2) -> o1.getUserId()-o2.getUserId());
-
-        return sorted;
-    }
-
 }

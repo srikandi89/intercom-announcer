@@ -9,6 +9,7 @@ import com.intercom.announcer.core.RestApi;
 import com.intercom.announcer.entities.Customer;
 import com.intercom.announcer.entities.Location;
 import com.intercom.announcer.repositories.CustomerRepositoryImpl;
+import com.intercom.announcer.utilities.ArrayUtility;
 import com.intercom.announcer.utilities.LocationUtility;
 import com.intercom.announcer.utilities.StringUtility;
 
@@ -51,7 +52,7 @@ public class CustomerListViewModel extends ViewModel {
                 }
             }
 
-            return customers;
+            return ArrayUtility.sortCustomers(customers);
         });
 
         return customerListLiveData;

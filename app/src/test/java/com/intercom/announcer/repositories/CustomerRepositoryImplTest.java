@@ -2,6 +2,7 @@ package com.intercom.announcer.repositories;
 
 import com.intercom.announcer.core.RestApi;
 import com.intercom.announcer.entities.Customer;
+import com.intercom.announcer.utilities.ArrayUtility;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class CustomerRepositoryImplTest {
         c.setUserId(4);
         customers.add(c);
 
-        List<Customer> sorted = customerRepositoryImpl.sortCustomers(customers);
+        List<Customer> sorted = ArrayUtility.sortCustomers(customers);
         long expectedFirstId = 3;
         long actualFirstId = sorted.get(0).getUserId();
 
