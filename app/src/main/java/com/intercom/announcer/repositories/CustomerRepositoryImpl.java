@@ -35,8 +35,14 @@ public class CustomerRepositoryImpl implements CustomerRepository {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
-                    String raw = response.body().string();
-                    rawResponseLiveData.setValue(raw);
+                    if (response.body() != null) {
+                        String raw = response.body().string();
+                        rawResponseLiveData.setValue(raw);
+                    }
+                    else {
+                        rawResponseLiveData.setValue(null);
+                    }
+
                 } catch (IOException e) {
                     rawResponseLiveData.setValue(null);
                 }

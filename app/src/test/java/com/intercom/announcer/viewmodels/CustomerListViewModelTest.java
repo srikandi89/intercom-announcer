@@ -16,6 +16,7 @@ import com.intercom.announcer.utilities.LocationUtility;
 import com.intercom.announcer.utilities.StringUtility;
 import com.jraska.livedata.TestObserver;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -68,11 +69,15 @@ public class CustomerListViewModelTest {
         customerListVm = new CustomerListViewModel();
     }
 
+    @After
+    public void tearDown() throws IOException {
+        mockWebServer.shutdown();
+    }
+
     @Test
-    public void testGetCustomerListLiveData() throws IOException, InterruptedException {
+    public void testGetCustomerListLiveData_response200() throws IOException, InterruptedException {
         MockResponse mockResponse = new MockResponse().setResponseCode(200).setBody(customersTest);
         mockWebServer.enqueue(mockResponse);
-
 
         customerListVm.init(restApi);
 
@@ -105,5 +110,23 @@ public class CustomerListViewModelTest {
         for (int i=0; i<expectedCustomers.size(); i++) {
             assertEquals(expectedCustomers.get(i).getName(), customerListObserver.value().get(i).getName());
         }
+    }
+
+    @Test
+    public void testGetCustomerListLiveData_responseNot200() throws IOException, InterruptedException {
+        MockResponse mockResponse = new MockResponse().setResponseCode(401).setBody("");
+        mockWebServer.enqueue(mockResponse);
+
+        customerListVm.init(restApi);
+
+        customerListObserver = TestObserver
+                .test(customerListVm.getCustomerListLiveData(Config.sourceLocation, Config.distanceThreshold))
+                .awaitValue();
+
+        customerListObserver.assertHasValue();
+
+        List<Customer> expectedCustomers = null;
+
+        assertEquals(expectedCustomers, customerListObserver.value());
     }
 }

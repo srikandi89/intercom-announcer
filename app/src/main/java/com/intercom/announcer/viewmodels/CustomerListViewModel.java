@@ -32,6 +32,10 @@ public class CustomerListViewModel extends ViewModel {
      */
     public LiveData<List<Customer>> getCustomerListLiveData(Location source, double thresholdDistance) {
         customerListLiveData = Transformations.map(customerRepositoryImpl.getCustomersLiveData(), raw -> {
+            if (raw == null) {
+                return null;
+            }
+
             String[] rawList = StringUtility.parseStrings(raw);
             List<Customer> customers = new ArrayList<>();
 
