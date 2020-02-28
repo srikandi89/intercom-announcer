@@ -62,9 +62,5 @@ public class CustomerListViewModelTest {
     @Test
     public void testGetCustomerListLiveData() {
 
-        MutableLiveData<List<Customer>> mockedMutableLiveData = new MutableLiveData<>();
-        mockedMutableLiveData.setValue(fakedCustomerList);
-
-        when(customerRepository.getCustomersLiveData(source, distanceThreshold)).thenReturn(mockedMutableLiveData);
     }
 }

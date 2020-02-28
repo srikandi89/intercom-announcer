@@ -23,4 +23,8 @@ public class LocationUtility {
     private static double hav(double deg) {
         return Math.pow(Math.sin(deg/2), 2);
     }
+
+    public static boolean inRange(double distance, double thresholdDistance) {
+        return distance <= thresholdDistance;
+    }
 }

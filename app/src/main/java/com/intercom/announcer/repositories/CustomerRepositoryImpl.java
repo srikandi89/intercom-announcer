@@ -21,55 +21,33 @@ import retrofit2.Response;
 
 public class CustomerRepositoryImpl implements CustomerRepository {
     private RestApi restApi;
+    private MutableLiveData<String> rawResponseLiveData;
 
     public CustomerRepositoryImpl(RestApi restApi) {
         this.restApi = restApi;
+        rawResponseLiveData = new MutableLiveData<>();
     }
 
     @Override
-    public MutableLiveData<List<Customer>> getCustomersLiveData(Location source, double thresholdDistance) {
-
-        MutableLiveData<List<Customer>> customersLiveData = new MutableLiveData<>();
-
+    public MutableLiveData<String> getCustomersLiveData() {
         Call<ResponseBody> call = restApi.getApi().create(CustomerService.class).getCustomers();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 try {
                     String raw = response.body().string();
-                    String[] rawList = StringUtility.parseStrings(raw);
-                    List<Customer> customers = new ArrayList<>();
-
-                    if (rawList != null) {
-                        for (String data: rawList) {
-                            Customer customer = Customer.toCustomer(data);
-
-                            if (customer != null) {
-                                Location l2 = new Location(customer.getLatitude(), customer.getLongitude());
-
-                                double distance = LocationUtility.getDistance(source, l2);
-                                customer.setDistance(distance);
-
-                                if (inRange(distance, thresholdDistance)) {
-                                    customers.add(customer);
-                                }
-                            }
-                        }
-
-                        customersLiveData.setValue(customers);
-                    }
+                    rawResponseLiveData.setValue(raw);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    rawResponseLiveData.setValue(null);
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                customersLiveData.setValue(null);
+                rawResponseLiveData.setValue(null);
             }
         });
-
-        return customersLiveData;
+        return rawResponseLiveData;
     }
 
     public boolean inRange(double distance, double thresholdDistance) {
@@ -82,4 +60,5 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
         return sorted;
     }
+
 }
