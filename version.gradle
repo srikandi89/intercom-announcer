@@ -23,6 +23,7 @@ ext {
     testExtJunitVersion         = "1.1.1"
     espressoCoreVersion         = "3.2.0"
     fakerVersion                = "1.0.2"
+    mockWebServer               = "4.4.0"
 
     // jetpack component section
     navigationVersion           = "2.3.0-alpha02"

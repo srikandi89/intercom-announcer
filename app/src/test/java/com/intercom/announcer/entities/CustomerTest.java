@@ -1,6 +1,11 @@
 package com.intercom.announcer.entities;
 
+import com.intercom.announcer.testutility.FileLoader;
+
 import org.junit.Test;
+
+import java.io.IOException;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -22,5 +27,14 @@ public class CustomerTest {
         assertTrue(expected.getLongitude() == actual.getLongitude());
         assertEquals(expected.getUserId(), actual.getUserId());
         assertEquals(expected.getName(), actual.getName());
+    }
+
+    @Test
+    public void testToCustomerList() throws IOException {
+        String raw = FileLoader.getStringFromFile(getClass().getClassLoader());
+
+        List<Customer> customers = Customer.toCustomerList(raw);
+
+        assertEquals(32, customers.size());
     }
 }

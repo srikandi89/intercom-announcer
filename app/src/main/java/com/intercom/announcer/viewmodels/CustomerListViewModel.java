@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.intercom.announcer.Config;
 import com.intercom.announcer.core.RestApi;
 import com.intercom.announcer.entities.Customer;
 import com.intercom.announcer.entities.Location;
@@ -36,23 +37,16 @@ public class CustomerListViewModel extends ViewModel {
                 return null;
             }
 
-            String[] rawList = StringUtility.parseStrings(raw);
             List<Customer> customers = new ArrayList<>();
 
-            if (rawList != null) {
-                for (String data : rawList) {
-                    Customer customer = Customer.toCustomer(data);
+            List<Customer> temp = Customer.toCustomerList(raw);
+            for (Customer customer: temp) {
+                Location l2 = new Location(customer.getLatitude(), customer.getLongitude());
+                double distance = LocationUtility.getDistance(source, l2);
 
-                    if (customer != null) {
-                        Location l2 = new Location(customer.getLatitude(), customer.getLongitude());
-
-                        double threshold = LocationUtility.getDistance(source, l2);
-                        customer.setDistance(threshold);
-
-                        if (LocationUtility.inRange(threshold, thresholdDistance)) {
-                            customers.add(customer);
-                        }
-                    }
+                if (LocationUtility.inRange(distance, thresholdDistance)) {
+                    customer.setDistance(distance);
+                    customers.add(customer);
                 }
             }
 

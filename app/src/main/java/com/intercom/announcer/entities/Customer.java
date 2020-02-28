@@ -4,6 +4,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.intercom.announcer.utilities.LocationUtility;
+import com.intercom.announcer.utilities.StringUtility;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Here are the fields required to be mapped to customer object
@@ -81,4 +86,19 @@ public class Customer {
             return null;
         }
     }
+
+    public static List<Customer> toCustomerList(String raw) {
+        String[] rawList = StringUtility.parseStrings(raw);
+        List<Customer> customers = new ArrayList<>();
+
+        if (rawList != null) {
+            for (String data : rawList) {
+                Customer customer = Customer.toCustomer(data);
+                customers.add(customer);
+            }
+        }
+
+        return customers;
+    }
+
 }

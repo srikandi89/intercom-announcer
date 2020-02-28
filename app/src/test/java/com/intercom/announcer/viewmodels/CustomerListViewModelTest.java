@@ -1,16 +1,12 @@
 package com.intercom.announcer.viewmodels;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
-import com.github.javafaker.Faker;
 import com.intercom.announcer.Config;
 import com.intercom.announcer.core.RestApi;
 import com.intercom.announcer.entities.Customer;
 import com.intercom.announcer.entities.Location;
+import com.intercom.announcer.testutility.FileLoader;
 import com.intercom.announcer.utilities.ArrayUtility;
 import com.intercom.announcer.utilities.LocationUtility;
 import com.intercom.announcer.utilities.StringUtility;
@@ -55,16 +51,7 @@ public class CustomerListViewModelTest {
         restApi = new RestApi(baseUrl);
         restApi.build();
 
-        InputStream is = getClass().getClassLoader().getResourceAsStream("customers.txt");
-        InputStreamReader isr = new InputStreamReader(is);
-        BufferedReader reader = new BufferedReader(isr);
-        StringBuffer sb = new StringBuffer();
-        String temp;
-        while ((temp = reader.readLine()) != null) {
-            sb.append(temp+"\n");
-        }
-
-        customersTest = sb.toString();
+        customersTest = FileLoader.getStringFromFile(getClass().getClassLoader());
 
         customerListVm = new CustomerListViewModel();
     }
@@ -75,26 +62,23 @@ public class CustomerListViewModelTest {
     }
 
     @Test
-    public void testGetCustomerListLiveData_response200() throws IOException, InterruptedException {
+    public void testGetCustomerListLiveData_response200() throws InterruptedException {
         MockResponse mockResponse = new MockResponse().setResponseCode(200).setBody(customersTest);
         mockWebServer.enqueue(mockResponse);
 
         customerListVm.init(restApi);
 
         List<Customer> expectedCustomers = new ArrayList<>();
-        String[] rawList = StringUtility.parseStrings(customersTest);
-        for (String data : rawList) {
-            Customer customer = Customer.toCustomer(data);
 
-            if (customer != null) {
-                Location l2 = new Location(customer.getLatitude(), customer.getLongitude());
+        List<Customer> temp = Customer.toCustomerList(customersTest);
 
-                double threshold = LocationUtility.getDistance(Config.sourceLocation, l2);
-                customer.setDistance(threshold);
+        for (Customer customer: temp) {
+            Location l2 = new Location(customer.getLatitude(), customer.getLongitude());
+            double distance = LocationUtility.getDistance(Config.sourceLocation, l2);
 
-                if (LocationUtility.inRange(threshold, Config.distanceThreshold)) {
-                    expectedCustomers.add(customer);
-                }
+            if (LocationUtility.inRange(distance, Config.distanceThreshold)) {
+                customer.setDistance(distance);
+                expectedCustomers.add(customer);
             }
         }
 
@@ -109,11 +93,12 @@ public class CustomerListViewModelTest {
 
         for (int i=0; i<expectedCustomers.size(); i++) {
             assertEquals(expectedCustomers.get(i).getName(), customerListObserver.value().get(i).getName());
+            assertTrue(Math.abs(expectedCustomers.get(i).getDistance() - customerListObserver.value().get(i).getDistance()) <= 0.001);
         }
     }
 
     @Test
-    public void testGetCustomerListLiveData_responseNot200() throws IOException, InterruptedException {
+    public void testGetCustomerListLiveData_responseNot2xx() throws InterruptedException {
         MockResponse mockResponse = new MockResponse().setResponseCode(401).setBody("");
         mockWebServer.enqueue(mockResponse);
 
