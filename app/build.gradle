@@ -54,4 +54,8 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:$navVersion"
     implementation "androidx.navigation:navigation-ui:$navVersion"
     androidTestImplementation "androidx.navigation:navigation-testing:$navVersion"
+
+    testImplementation "org.mockito:mockito-core:$mockitoCoreVersion"
+
+    implementation "com.github.javafaker:javafaker:$fakerVersion"
 }

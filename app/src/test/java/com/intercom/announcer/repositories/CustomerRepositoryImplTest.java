@@ -11,9 +11,9 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class CustomerRepositoryTest {
+public class CustomerRepositoryImplTest {
 
-    CustomerRepository customerRepository;
+    CustomerRepositoryImpl customerRepositoryImpl;
     RestApi restApi;
     String baseUrl;
 
@@ -21,7 +21,7 @@ public class CustomerRepositoryTest {
     public void setUp() {
         baseUrl = "someUrl";
         restApi = new RestApi(baseUrl);
-        customerRepository = new CustomerRepository(restApi);
+        customerRepositoryImpl = new CustomerRepositoryImpl(restApi);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class CustomerRepositoryTest {
         c.setUserId(4);
         customers.add(c);
 
-        List<Customer> sorted = customerRepository.sortCustomers(customers);
+        List<Customer> sorted = customerRepositoryImpl.sortCustomers(customers);
         long expectedFirstId = 3;
         long actualFirstId = sorted.get(0).getUserId();
 
@@ -52,7 +52,7 @@ public class CustomerRepositoryTest {
 
     @Test
     public void testInRange() {
-        assertTrue(customerRepository.inRange(90, 100));
-        assertFalse(customerRepository.inRange(110,100));
+        assertTrue(customerRepositoryImpl.inRange(90, 100));
+        assertFalse(customerRepositoryImpl.inRange(110,100));
     }
 }

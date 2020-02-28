@@ -6,15 +6,15 @@ import androidx.lifecycle.ViewModel;
 import com.intercom.announcer.core.RestApi;
 import com.intercom.announcer.entities.Customer;
 import com.intercom.announcer.entities.Location;
-import com.intercom.announcer.repositories.CustomerRepository;
+import com.intercom.announcer.repositories.CustomerRepositoryImpl;
 
 import java.util.List;
 
 public class CustomerListViewModel extends ViewModel {
-    private CustomerRepository customerRepository;
+    private CustomerRepositoryImpl customerRepositoryImpl;
 
     public void init(RestApi restApi) {
-        customerRepository = new CustomerRepository(restApi);
+        customerRepositoryImpl = new CustomerRepositoryImpl(restApi);
     }
 
     /**
@@ -23,6 +23,6 @@ public class CustomerListViewModel extends ViewModel {
      * @return live data of list of customer
      */
     public LiveData<List<Customer>> getCustomerListLiveData(Location source, double distance) {
-        return customerRepository.getCustomersLiveData(source, distance);
+        return customerRepositoryImpl.getCustomersLiveData(source, distance);
     }
 }
